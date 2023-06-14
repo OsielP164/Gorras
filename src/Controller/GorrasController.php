@@ -1,0 +1,106 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+/**
+ * Gorras Controller
+ *
+ * @property \App\Model\Table\GorrasTable $Gorras
+ * @method \App\Model\Entity\Gorra[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ */
+class GorrasController extends AppController
+{
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function index()
+    {
+        $this->Authorization->skipAuthorization();
+        $gorras = $this->paginate($this->Gorras);
+
+        $this->set(compact('gorras'));
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id Gorra id.
+     * @return \Cake\Http\Response|null|void Renders view
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $gorra = $this->Gorras->get($id, [
+            'contain' => [],
+        ]);
+
+        $this->set(compact('gorra'));
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $gorra = $this->Gorras->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $gorra = $this->Gorras->patchEntity($gorra, $this->request->getData());
+            if ($this->Gorras->save($gorra)) {
+                $this->Flash->success(__('The gorra has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The gorra could not be saved. Please, try again.'));
+        }
+        $this->set(compact('gorra'));
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Gorra id.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $gorra = $this->Gorras->get($id, [
+            'contain' => [],
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $gorra = $this->Gorras->patchEntity($gorra, $this->request->getData());
+            if ($this->Gorras->save($gorra)) {
+                $this->Flash->success(__('The gorra has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The gorra could not be saved. Please, try again.'));
+        }
+        $this->set(compact('gorra'));
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Gorra id.
+     * @return \Cake\Http\Response|null|void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $gorra = $this->Gorras->get($id);
+        if ($this->Gorras->delete($gorra)) {
+            $this->Flash->success(__('The gorra has been deleted.'));
+        } else {
+            $this->Flash->error(__('The gorra could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+}
